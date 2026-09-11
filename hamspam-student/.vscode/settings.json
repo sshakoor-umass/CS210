@@ -1,0 +1,5 @@
+{
+  "files.readonlyInclude": {
+    "src/main/java/hamspam/HamCommander.java": true
+  }
+}
