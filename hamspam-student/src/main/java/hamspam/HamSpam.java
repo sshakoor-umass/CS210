@@ -64,6 +64,12 @@ public class HamSpam {
 	 * @return the array of hamspam values
 	 */
 	public String[] getValues(int start, int end) {
+		/***
+		 * end - start + 1: What that does is that it takes sets the range
+		 * to the first number to the last
+		 * inclusive of the last
+		 * This method turns the nums to strings and allows them to be printed
+		 ***/
 		String[] vals = new String[end - start +1];
 		for (int i = start; i < end + 1; i++){
 			vals[i - start] = getValue(i);
