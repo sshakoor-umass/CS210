@@ -19,7 +19,13 @@ public class ExtendedArrayList<E> extends ArrayList<E> {
 	 * @return the number of elements equal to e
 	 */
 	public int count(E e) {
-		return 0;
+		int count = 0;
+		for (E element : this) {
+			if (element.equals(e)) {
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	/**
@@ -38,8 +44,17 @@ public class ExtendedArrayList<E> extends ArrayList<E> {
 	 * @param n the distance to rotate the list right
 	 */
 	public void rotateRight(int n) {
-	}	
-	
+		if (size() == 0) return;
+
+		n = n % size();  // Normalize n
+		if (n < 0) n += size();
+
+		List<E> temp = new ArrayList<>(this);
+		for (int i = 0; i < size(); i++) {
+			set((i + n) % size(), temp.get(i));
+		}
+	}
+
 	/**
 	 * Intersperses e between each existing element of the list.
 	 * 
@@ -49,6 +64,16 @@ public class ExtendedArrayList<E> extends ArrayList<E> {
 	 * @param e the element to intersperse
 	 */
 	public void intersperse(E e) {
+		List<E> temp = new ArrayList<>();
+		for (E element : this) {
+			temp.add(element);
+			temp.add(e);
+		}
+		if (!temp.isEmpty()) {
+			temp.remove(temp.size() - 1);
+		}
+		clear();
+		addAll(temp);
 	}
 	
 	/**
@@ -59,6 +84,10 @@ public class ExtendedArrayList<E> extends ArrayList<E> {
 	 * @return a reversed copy of the list
 	 */
 	public List<E> reversed() {
-		return null;
+		List<E> reversed = new ArrayList<>();
+		for (int i = size() - 1; i >= 0; i--) {
+			reversed.add(get(i));
+		}
+		return reversed;
 	}
 }
