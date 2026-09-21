@@ -4,6 +4,7 @@
 
 package list.exercises;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListExercises {
@@ -15,7 +16,11 @@ public class ListExercises {
 	 * @return the number of characters
 	 */
 	public static int countCharacters(List<String> l) {
-		return 0;
+		int total = 0;
+		for (String s : l) {
+			total += s.length();
+		}
+		return total;
 	}
 	
 	/**
@@ -26,7 +31,7 @@ public class ListExercises {
 	 * @return a list of words
 	 */
 	public static List<String> split(String s) {
-		return null;
+		return List.of(s.split(" "));
 	}
 
 	/**
@@ -39,8 +44,14 @@ public class ListExercises {
 	 * @return a list of uppercased strings
 	 */
 	public static List<String> uppercased(List<String> l) {
-		return null;
-	}
+    List<String> result = new ArrayList<>();
+
+    for (String s : l) {
+        result.add(s.toUpperCase());
+    }
+
+    return result;
+}
 
 	/**
 	 * Returns true if and only if each string in the supplied list of strings
@@ -50,7 +61,15 @@ public class ListExercises {
 	 * @return true iff each string starts with an uppercase letter
 	 */
 	public static boolean allCapitalizedWords(List<String> l) {
-		return false;
+		if (l.isEmpty()) {
+			return false;
+		}
+		for (String s : l) {
+			if (s.isEmpty() || !Character.isUpperCase(s.charAt(0))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -66,7 +85,13 @@ public class ListExercises {
 	 * @return a list of strings containing the character c, selected from l
 	 */
 	public static List<String> filterContaining(List<String> l, char c) {
-		return null;
+		List<String> result = new ArrayList<>();
+		for (String s : l) {
+			if (s.indexOf(c) != -1) {
+				result.add(s);
+			}
+		}
+		return result;
 	}
 	
 	/**
@@ -76,5 +101,10 @@ public class ListExercises {
 	 * @param l a non-null, sorted list of strings
 	 */
 	public static void insertInOrder(String s, List<String> l) {
+		int i = 0;
+		while (i < l.size() && l.get(i).compareTo(s) < 0) {
+			i++;
+		}
+		l.add(i, s);
 	}
 }
