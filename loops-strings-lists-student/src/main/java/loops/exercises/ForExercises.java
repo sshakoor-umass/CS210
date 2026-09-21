@@ -16,7 +16,11 @@ public class ForExercises {
      * Assume 0 <= n.
      */
     public static int sumTo(int n) {
-		    return 0;
+        int total = 0;
+        for (int i = 0; i < n; i++) {
+            total += i;
+        }
+        return total;
     }
 
     /**
@@ -25,7 +29,11 @@ public class ForExercises {
      * Assume 0 <= m < n.
      */
     public static int sumFromTo(int m, int n) {
-		    return 0;
+        int total = 0;
+        for (int i = m; i < n; i++) {
+            total += i;
+        }
+        return total;
     }
 
     /**
@@ -34,7 +42,11 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static int sum(int[] a) {
-		    return 0;
+        int total = 0;
+        for (int i : a) {
+            total += i;
+        }
+        return total;
     }
 
     /**
@@ -56,7 +68,12 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static boolean allEven(int[] a) {
-		    return false;
+        for (int i : a) {
+            if (i % 2 != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -65,7 +82,12 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static boolean contains(List<Integer> l, int i) {
-		    return false;
+        for (int j : l) {
+            if (j == i) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -75,7 +97,11 @@ public class ForExercises {
      * Use a classic for loop.
      */
     public static int sumEveryOther(int[] a) {
-		    return 0;
+        int total = 0;
+        for (int i = 0; i < a.length; i += 2) {
+            total += a[i];
+        }
+        return total;
     }
 
     /**
@@ -87,6 +113,11 @@ public class ForExercises {
      * Use a classic for loop.
      */
     public static boolean doublingList(List<Integer> l) {
-		    return false;
+        for (int i = 1; i < l.size(); i++) {
+            if (l.get(i) != 2 * l.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
