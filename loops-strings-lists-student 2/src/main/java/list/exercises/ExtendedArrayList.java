@@ -84,10 +84,10 @@ public class ExtendedArrayList<E> extends ArrayList<E> {
 	 * @return a reversed copy of the list
 	 */
 	public List<E> reversed() {
-		List<E> reversed = new ArrayList<>();
+		List<E> reversedList = new ArrayList<>();
 		for (int i = size() - 1; i >= 0; i--) {
-			reversed.add(get(i));
+			reversedList.add(get(i));
 		}
-		return reversed;
+		return reversedList;
 	}
 }

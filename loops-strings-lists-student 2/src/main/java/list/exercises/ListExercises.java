@@ -4,7 +4,6 @@
 
 package list.exercises;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListExercises {
@@ -16,11 +15,11 @@ public class ListExercises {
 	 * @return the number of characters
 	 */
 	public static int countCharacters(List<String> l) {
-		int total = 0;
+		int count = 0;
 		for (String s : l) {
-			total += s.length();
+			count += s.length();
 		}
-		return total;
+		return count;
 	}
 	
 	/**
@@ -31,7 +30,16 @@ public class ListExercises {
 	 * @return a list of words
 	 */
 	public static List<String> split(String s) {
-		return List.of(s.split(" "));
+		List<String> words = new ArrayList<>();
+		if (s.isEmpty()) {
+			words.add("");
+			return words;
+		}
+		String[] split = s.split("\\s+");
+		for (String word : split) {
+			words.add(word);
+		}
+		return words;
 	}
 
 	/**
@@ -44,14 +52,12 @@ public class ListExercises {
 	 * @return a list of uppercased strings
 	 */
 	public static List<String> uppercased(List<String> l) {
-    List<String> result = new ArrayList<>();
-
-    for (String s : l) {
-        result.add(s.toUpperCase());
-    }
-
-    return result;
-}
+		List<String> uppercasedList = new ArrayList<>();
+		for (String s : l) {
+			uppercasedList.add(s.toUpperCase());
+		}
+		return uppercasedList;
+	}
 
 	/**
 	 * Returns true if and only if each string in the supplied list of strings
@@ -61,9 +67,7 @@ public class ListExercises {
 	 * @return true iff each string starts with an uppercase letter
 	 */
 	public static boolean allCapitalizedWords(List<String> l) {
-		if (l.isEmpty()) {
-			return false;
-		}
+		if (l.isEmpty()) return false;
 		for (String s : l) {
 			if (s.isEmpty() || !Character.isUpperCase(s.charAt(0))) {
 				return false;
@@ -85,13 +89,13 @@ public class ListExercises {
 	 * @return a list of strings containing the character c, selected from l
 	 */
 	public static List<String> filterContaining(List<String> l, char c) {
-		List<String> result = new ArrayList<>();
+		List<String> filtered = new ArrayList<>();
 		for (String s : l) {
 			if (s.indexOf(c) != -1) {
-				result.add(s);
+				filtered.add(s);
 			}
 		}
-		return result;
+		return filtered;
 	}
 	
 	/**

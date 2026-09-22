@@ -12,7 +12,7 @@ public class StringExercises {
 	 * @return the index of the first occurrence of "Marc" in string, or -1 if not found
 	 */
 	public static int findMarc(String string) {
-		return findSubstring(string, "Marc");
+		return string.indexOf("Marc");
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class StringExercises {
 	 * @return true if and only if the string contains the substring
 	 */
 	public static boolean contains(String string, String substring) {
-		return findSubstring(string, substring) != -1;
+		return string.indexOf(substring) != -1;
 	}
 	
 	/**

@@ -16,11 +16,11 @@ public class ForExercises {
      * Assume 0 <= n.
      */
     public static int sumTo(int n) {
-        int total = 0;
+        int sum = 0;
         for (int i = 0; i < n; i++) {
-            total += i;
+            sum += i;
         }
-        return total;
+        return sum;
     }
 
     /**
@@ -29,11 +29,11 @@ public class ForExercises {
      * Assume 0 <= m < n.
      */
     public static int sumFromTo(int m, int n) {
-        int total = 0;
+        int sum = 0;
         for (int i = m; i < n; i++) {
-            total += i;
+            sum += i;
         }
-        return total;
+        return sum;
     }
 
     /**
@@ -42,11 +42,11 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static int sum(int[] a) {
-        int total = 0;
+        int sum = 0;
         for (int i : a) {
-            total += i;
+            sum += i;
         }
-        return total;
+        return sum;
     }
 
     /**
@@ -55,11 +55,11 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static int sum(List<Integer> l) {
-        int total = 0;
+        int sum = 0;
         for (int i : l) {
-            total += i;
+            sum += i;
         }
-        return total;
+        return sum;
     }
 
 
@@ -101,11 +101,11 @@ public class ForExercises {
      * Use a classic for loop.
      */
     public static int sumEveryOther(int[] a) {
-        int total = 0;
+        int sum = 0;
         for (int i = 0; i < a.length; i += 2) {
-            total += a[i];
+            sum += a[i];
         }
-        return total;
+        return sum;
     }
 
     /**
