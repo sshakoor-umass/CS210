@@ -55,7 +55,11 @@ public class ForExercises {
      * Use a for-each loop.
      */
     public static int sum(List<Integer> l) {
-		    return 0;
+        int total = 0;
+        for (int i : l) {
+            total += i;
+        }
+        return total;
     }
 
 
