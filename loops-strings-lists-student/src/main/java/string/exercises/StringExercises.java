@@ -12,7 +12,7 @@ public class StringExercises {
 	 * @return the index of the first occurrence of "Marc" in string, or -1 if not found
 	 */
 	public static int findMarc(String string) {
-		return -2;
+		return findSubstring(string, "Marc");
 	}
 
 	/**
@@ -22,7 +22,7 @@ public class StringExercises {
 	 * @return the index of the first occurrence of the substring within the string, or -1 if not found
 	 */
 	public static int findSubstring(String string, String substring) {
-		return -2;
+		return string.indexOf(substring);
 	}
 		
 	/**
@@ -32,7 +32,7 @@ public class StringExercises {
 	 * @return true if and only if the string contains the substring
 	 */
 	public static boolean contains(String string, String substring) {
-		return false;
+		return findSubstring(string, substring) != -1;
 	}
 	
 	/**
@@ -44,7 +44,7 @@ public class StringExercises {
 	 * @return an array representing the words in the string.
 	 */
 	public static String[] splitIntoWords(String string) {
-		return null;
+		return string.split("\\s+");
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class StringExercises {
 	 * @return the substring representing the first four characters of the string
 	 */
 	public static String firstFour(String string) {
-		return null;
+		return string.substring(0, 4);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class StringExercises {
 	 * @return the substring representing the first n characters of the string
 	 */
 	public static String firstN(String string, int n) {
-		return null;
+		return string.substring(0, n);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class StringExercises {
 	 * @return the substring representing the last four characters of the string
 	 */
 	public static String lastFour(String string) {
-		return null;
+		return string.substring(string.length() - 4);
 	}
 
 	/**
@@ -82,6 +82,6 @@ public class StringExercises {
 	 * @return the substring representing the last n characters of the string
 	 */
 	public static String lastN(String string, int n) {
-		return null;
+		return string.substring(string.length() - n);
 	}
 }
