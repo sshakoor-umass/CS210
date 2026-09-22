@@ -1,7 +1,7 @@
 /*
  * Copyright 2021 Marc Liberatore.
  */
-
+ 
 package list.exercises;
 
 import static org.junit.jupiter.api.Assertions.*;
