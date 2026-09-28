@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+}
+
+// This build runs on the Gradle wrapper checked in beside it, which supports
+// JVM 17 through 26. Fail with actionable guidance instead of a stack trace
+// from deep inside Gradle.
+def jdk = JavaVersion.current().majorVersion.toInteger()
+if (jdk < 17 || jdk > 26) {
+    throw new GradleException("""
+CICS 210 requires a JDK between 17 and 26. You are running JDK ${jdk}.
+Install Eclipse Temurin 21 (LTS) from
+  https://adoptium.net/temurin/releases/?version=21
+and point JAVA_HOME at it. See STEP 1 of the assignment 1 instructions.
+""")
+}
+
+// Gradescope compiles your submission on JDK 17. Compiling against the JDK 17
+// API here means anything that builds locally also builds there, whatever JDK
+// you installed: a newer API is a compile error now, not a failed submission.
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Parse the [submission] file list from config.ini (e.g. files = [A.java, B.java]).
+def submissionFiles() {
+    def cfg = file('config.ini')
+    if (!cfg.exists()) {
+        throw new GradleException("config.ini not found next to build.gradle")
+    }
+    def m = (cfg.text =~ /(?ms)^\s*files\s*=\s*\[(.*?)\]/)
+    if (!m) {
+        throw new GradleException("Could not find 'files = [...]' in config.ini")
+    }
+    return m.group(1).split(',')*.trim().findAll { it }
+}
+
+// Gather the submission files into a flat submission.zip (project root) for Gradescope,
+// dropping the package directories Gradescope does not want.
+tasks.register('makeSubmissionZipfile', Zip) {
+    description = 'Gather the files listed in config.ini into a flat submission.zip (project root) for Gradescope.'
+    def names = submissionFiles()
+    archiveFileName = 'submission.zip'
+    destinationDirectory = layout.projectDirectory
+    from(sourceSets.main.allJava) { names.each { include "**/${it}" } }
+    includeEmptyDirs = false
+    eachFile { it.path = it.name }
+    doFirst {
+        names.each { name ->
+            if (fileTree('src/main/java').matching { include "**/${name}" }.isEmpty()) {
+                throw new GradleException(
+                    "Submission file ${name} (from config.ini) not found under src/main/java")
+            }
+        }
+    }
+    doLast {
+        println "Wrote ${archiveFile.get().asFile} (${names.size()} file(s))"
+        println "Submitted: ${names.join(', ')}"
+        println "NOTE: only these files are graded. Edits to any other file (tests included) are NOT submitted and do not affect your grade."
+    }
+}
