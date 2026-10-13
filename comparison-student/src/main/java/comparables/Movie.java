@@ -55,13 +55,12 @@ public class Movie implements Comparable<Movie> {
         // Break ties by rating (highest to lowest)
         // Break remaining ties by title, using the natural (lexicographic) ordering of
         // Strings
-        if (this.year != otherMovie.year) {
-            return this.year - otherMovie.year;
+        if (this.releaseYear != otherMovie.releaseYear) {
+            return this.releaseYear - otherMovie.releaseYear;
         } else if (this.rating != otherMovie.rating) {
             return Double.compare(otherMovie.rating, this.rating);
         } else {
             return this.title.compareTo(otherMovie.title);
         }
-        return 0;
     }
 }

@@ -44,6 +44,6 @@ public class Coin implements Comparable<Coin> {
     public int compareTo(Coin otherCoin) {
         // TODO: Define a sensible natural ordering on coins 
         //       (smaller values come before larger)
-        return this.value - otherCoin.value;
+        return (int) (this.value - otherCoin.value);
     }    
 }
