@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import comparators.TfIdfComparator;
@@ -69,16 +70,23 @@ public class SearchEngine {
 	}
 
 	public void addDocument(DocumentId documentId, Reader reader) throws IOException {
-		// Read the document contents and tokenize it into terms
-		Map<String, Integer> termCount = new HashMap<>();
-		// Tokenization and term counting logic goes here
-		// ...
-
-		// Update the index and termCounts maps
-		for (String term : termCount.keySet()) {
-			index.computeIfAbsent(term, k -> new HashSet<>()).add(documentId);
-			termCounts.put(documentId, termCount);
+		// ignore re-insertions of the same document
+		if (termCounts.containsKey(documentId)) {
+			return;
 		}
+
+		Map<String, Integer> termCount = new HashMap<>();
+
+		Scanner s = new Scanner(reader);
+		s.useDelimiter("\\W+");
+		while (s.hasNext()) {
+			String term = s.next().toLowerCase();
+			termCount.put(term, termCount.getOrDefault(term, 0) + 1);
+			index.computeIfAbsent(term, k -> new HashSet<>()).add(documentId);
+		}
+
+		// store even if the document is empty, so the ID is "known"
+		termCounts.put(documentId, termCount);
 	}
 
 	/**
