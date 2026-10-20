@@ -97,7 +97,7 @@ public class SearchEngine {
 	 * @return the set of DocumentIds that contain a given term
 	 */
 	public Set<DocumentId> indexLookup(String term) {
-		return index.getOrDefault(term, Set.of());
+		return index.getOrDefault(term.toLowerCase(), Set.of());
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class SearchEngine {
 		if (!termCounts.containsKey(documentId)) {
 			throw new IllegalArgumentException("Document not found");
 		}
-		return termCounts.get(documentId).getOrDefault(term, 0);
+		return termCounts.get(documentId).getOrDefault(term.toLowerCase(), 0);
 	}
 
 	/**
@@ -133,8 +133,8 @@ public class SearchEngine {
 	 */
 	public double inverseDocumentFrequency(String term) {
 		int docCount = termCounts.size();
-		int termDocCount = index.getOrDefault(term, Set.of()).size();
-		return Math.log((1 + docCount) / (1 + termDocCount));
+		int termDocCount = index.getOrDefault(term.toLowerCase(), Set.of()).size();
+		return Math.log((1.0 + docCount) / (1.0 + termDocCount));
 	}
 
 	/**

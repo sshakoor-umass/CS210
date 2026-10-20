@@ -28,7 +28,13 @@ public class RecursionExercises {
      * @return
      */
     static int sumOfDigitsIterative(int x) {
-        return 0;
+        x = Math.abs(x);
+        int sum = 0;
+        while (x > 0) {
+            sum += x % 10;
+            x /= 10;
+        }
+        return sum;
     }
 
     /**
@@ -57,7 +63,7 @@ public class RecursionExercises {
      * @return the size (length) of the linked list, starting from node
      */
     static <E> int size(Node<E> node) {
-        if (node == null){
+        if (node == null) {
             return 0;
         }
         return 1 + size(node.next);
@@ -74,7 +80,7 @@ public class RecursionExercises {
      * @return the i-th node of the list
      */
     static <E> Node<E> getNode(Node<E> node, int i) {
-        if (node == null){
+        if (node == null) {
             return null;
         }
         if (i == 0) {
@@ -89,7 +95,7 @@ public class RecursionExercises {
      * (Must be implemented recursively.)
      * 
      * @param node the head of the list
-     * @param e the element being searched for
+     * @param e    the element being searched for
      * @return true iff the list contains the element
      */
     static <E> boolean contains(Node<E> node, E e) {
@@ -130,11 +136,8 @@ public class RecursionExercises {
      */
     static boolean allEven(Node<Integer> node) {
         if (node == null) {
-            return true;
-        }
-        if (node.data % 2 != 0) {
             return false;
         }
-        return allEven(node.next);
+        return noneOdd(node);
     }
 }
