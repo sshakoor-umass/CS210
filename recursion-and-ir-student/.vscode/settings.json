@@ -1,0 +1,6 @@
+{
+  "files.readonlyInclude": {
+    "src/main/java/recursion/Node.java": true,
+    "src/main/java/documents/DocumentId.java": true
+  }
+}
