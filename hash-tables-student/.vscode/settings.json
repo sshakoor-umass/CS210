@@ -1,0 +1,7 @@
+{
+  "files.readonlyInclude": {
+    "src/main/java/hashmaps/SimpleMap.java": true,
+    "src/main/java/hashmaps/SimpleMapEntry.java": true,
+    "src/main/java/hashtables/HashTable.java": true
+  }
+}
