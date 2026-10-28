@@ -1,42 +1,20 @@
+
 /*
  * Copyright 2026 Marc Liberatore.
  */
 package hashtables;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-/**
- * An implementation of HashTable.
- * 
- * This implementation uses "open addressing" to resolve collisions. Open
- * addressing means that the underlying array stores references to elements
- * (*not* ArrayLists of references!). when there is a collision, the hash table
- * searches forward linearly in the array until the element being sought is
- * found, or until an empty (non-tombstone) cell is found.
- * 
- * This implementation maintains a capacity equal to 2^n - 1 for some positive
- * integer n. When the load factor with tombstones (i.e., (size + tombstones) /
- * capacity) exceeds 0.75, the next add() triggers a resize by incrementing n
- * (by one). Tombstones count toward the load factor because they occupy slots
- * and lengthen probe chains.
- * 
- * For example, when n=3, then capacity=7. When size=6 and tombstones=0, then
- * load factor with tombstones ~=0.86. The addition of the seventh item would
- * trigger a resize, increasing the capacity of the array to 15. Similarly, 
- * when size=5 and tombstones=1, the load factor with tombstones is also 
- * (5+1)/7 ~=0.86, so the next add() triggers a resize to capacity=15, 
- * even though the plain load factor (5/7 ~=0.71) does not exceed 0.75.
- */
 public class OpenHashTable<E> implements HashTable<E> {
+
     E[] array;
     boolean[] tombstone;
     int size = 0;
     int n;
     int capacity;
-    
-    /**
-     * Instantiate a new hash table. The initial capacity should be 7.
-     */
+
     public OpenHashTable() {
         this.n = 3;
         this.capacity = 7;
@@ -44,20 +22,23 @@ public class OpenHashTable<E> implements HashTable<E> {
         this.tombstone = new boolean[capacity];
     }
 
-    /**
-     * Instantiate a new hash table. The initial capacity should be 
-     * at least sufficient to hold n elements, but must be one less
-     * than a power of two.
-     */
     public OpenHashTable(int n) {
-        this.n = n;
-        this.capacity = (1 << n) - 1;
+        if (n < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        this.n = 1;
+        while ((1L << this.n) - 1 < n) {
+            this.n++;
+        }
+
+        this.capacity = (int) ((1L << this.n) - 1);
         this.array = (E[]) new Object[capacity];
         this.tombstone = new boolean[capacity];
     }
 
     private int index(E e) {
-        return Math.abs(e.hashCode() % capacity);
+        return Math.floorMod(e.hashCode(), capacity);
     }
 
     @Override
@@ -66,19 +47,15 @@ public class OpenHashTable<E> implements HashTable<E> {
     }
 
     @Override
-    public int size(){
+    public int size() {
         return size;
     }
 
     @Override
     public double loadFactor() {
-        return (size + tombstones()) / (double) capacity;
+        return (double) size / capacity;
     }
 
-    /**
-     * 
-     * @return the number of tombstones
-     */
     public int tombstones() {
         int count = 0;
         for (boolean t : tombstone) {
@@ -89,13 +66,26 @@ public class OpenHashTable<E> implements HashTable<E> {
         return count;
     }
 
-    /**
-     * Return the load factor: (size + number of tombstones) / capacity.
-     * 
-     * @return the load factor, including tombstones
-     */
     public double loadFactorWithTombstones() {
         return (size + tombstones()) / (double) capacity;
+    }
+
+    private void resize() {
+        E[] oldArray = array;
+        boolean[] oldTombstone = tombstone;
+
+        n++;
+        capacity = (int) ((1L << n) - 1);
+
+        array = (E[]) new Object[capacity];
+        tombstone = new boolean[capacity];
+        size = 0;
+
+        for (int i = 0; i < oldArray.length; i++) {
+            if (oldArray[i] != null && !oldTombstone[i]) {
+                add(oldArray[i]);
+            }
+        }
     }
 
     @Override
@@ -103,41 +93,81 @@ public class OpenHashTable<E> implements HashTable<E> {
         if (loadFactorWithTombstones() > 0.75) {
             resize();
         }
-        int index = index(e);
-        while (array[index] != null) {
-            if (!tombstone[index] && array[index].equals(e)) {
+
+        int start = index(e);
+        int firstTombstone = -1;
+
+        for (int i = 0; i < capacity; i++) {
+            int current = (start + i) % capacity;
+
+            if (array[current] == null) {
+                int target = firstTombstone != -1
+                    ? firstTombstone : current;
+
+                array[target] = e;
+                tombstone[target] = false;
+                size++;
+                return true;
+            }
+
+            if (tombstone[current]) {
+                if (firstTombstone == -1) {
+                    firstTombstone = current;
+                }
+            } else if (array[current].equals(e)) {
                 return false;
             }
-            index = (index + 1) % capacity;
         }
-        array[index] = e;
-        size++;
-        return true;
+
+        if (firstTombstone != -1) {
+            array[firstTombstone] = e;
+            tombstone[firstTombstone] = false;
+            size++;
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     public boolean remove(E e) {
-        int index = index(e);
-        while (array[index] != null) {
-            if (!tombstone[index] && array[index].equals(e)) {
-                tombstone[index] = true;
+        int start = index(e);
+
+        for (int i = 0; i < capacity; i++) {
+            int current = (start + i) % capacity;
+
+            if (array[current] == null) {
+                return false;
+            }
+
+            if (!tombstone[current]
+                    && array[current].equals(e)) {
+                tombstone[current] = true;
                 size--;
                 return true;
             }
-            index = (index + 1) % capacity;
         }
+
         return false;
     }
 
     @Override
     public E get(E e) {
-        int index = index(e);
-        while (array[index] != null) {
-            if (!tombstone[index] && array[index].equals(e)) {
-                return array[index];
+        int start = index(e);
+
+        for (int i = 0; i < capacity; i++) {
+            int current = (start + i) % capacity;
+
+            if (array[current] == null) {
+                return null;
             }
-            index = (index + 1) % capacity;
+
+            if (!tombstone[current]
+                    && array[current].equals(e)) {
+                return array[current];
+            }
         }
+
         return null;
     }
 
@@ -148,6 +178,28 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new Iterator<E>() {
+            int current = 0;
+
+            @Override
+            public boolean hasNext() {
+                while (current < capacity &&
+                       (array[current] == null ||
+                        tombstone[current])) {
+                    current++;
+                }
+
+                return current < capacity;
+            }
+
+            @Override
+            public E next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                return array[current++];
+            }
+        };
     }
 }

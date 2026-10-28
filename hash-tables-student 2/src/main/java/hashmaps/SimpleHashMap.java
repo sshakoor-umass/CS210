@@ -1,20 +1,17 @@
+
 /*
  * Copyright 2026 Marc Liberatore.
  */
+
 package hashmaps;
 
 import java.util.Set;
-
+import java.util.HashSet;
 
 import hashtables.ChainingHashTable;
 
-/**
- * An implementation of a SimpleMap, built using the ChainingHashTable and 
- * SimpleMapEntry classes. This class should behave similarly to the built-in
- * java.util.HashMap, though it is much simpler!
- */
 public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
-    // Use this table to implement the map
+
     ChainingHashTable<SimpleMapEntry<K, V>> table;
 
     public SimpleHashMap() {
@@ -28,44 +25,58 @@ public class SimpleHashMap<K, V> implements SimpleMap<K, V> {
 
     @Override
     public void put(K k, V v) {
-        table.add(new SimpleMapEntry<>(k, v));
+        SimpleMapEntry<K, V> entry = new SimpleMapEntry<>(k, v);
+
+        if (table.contains(entry)) {
+            table.remove(entry);
+        }
+
+        table.add(entry);
     }
 
     @Override
     public V get(K k) {
         SimpleMapEntry<K, V> entry = new SimpleMapEntry<>(k, null);
+
         if (table.contains(entry)) {
-            return table.get(entry).getValue();
+            return table.get(entry).v;
         }
+
         return null;
     }
 
     @Override
     public V getOrDefault(K k, V defaultValue) {
         SimpleMapEntry<K, V> entry = new SimpleMapEntry<>(k, null);
+
         if (table.contains(entry)) {
-            return table.get(entry).getValue();
+            return table.get(entry).v;
         }
+
         return defaultValue;
     }
 
     @Override
     public V remove(K k) {
         SimpleMapEntry<K, V> entry = new SimpleMapEntry<>(k, null);
+
         if (table.contains(entry)) {
-            V value = table.get(entry).getValue();
+            V value = table.get(entry).v;
             table.remove(entry);
             return value;
         }
+
         return null;
     }
 
     @Override
     public Set<K> keys() {
         Set<K> keys = new HashSet<>();
+
         for (SimpleMapEntry<K, V> entry : table) {
-            keys.add(entry.getKey());
+            keys.add(entry.k);
         }
+
         return keys;
     }
 }
