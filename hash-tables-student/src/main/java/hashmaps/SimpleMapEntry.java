@@ -55,4 +55,9 @@ public class SimpleMapEntry<K, V> {
             return false;
         return true;
     }
+
+    public V getValue() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getValue'");
+    }
 }

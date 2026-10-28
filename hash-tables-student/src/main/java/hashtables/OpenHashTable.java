@@ -4,6 +4,7 @@
 package hashtables;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An implementation of HashTable.
