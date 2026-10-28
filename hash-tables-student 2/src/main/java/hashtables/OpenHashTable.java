@@ -4,7 +4,6 @@
 package hashtables;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * An implementation of HashTable.
@@ -39,7 +38,10 @@ public class OpenHashTable<E> implements HashTable<E> {
      * Instantiate a new hash table. The initial capacity should be 7.
      */
     public OpenHashTable() {
-        this(7);
+        this.n = 3;
+        this.capacity = 7;
+        this.array = (E[]) new Object[capacity];
+        this.tombstone = new boolean[capacity];
     }
 
     /**
@@ -48,9 +50,6 @@ public class OpenHashTable<E> implements HashTable<E> {
      * than a power of two.
      */
     public OpenHashTable(int n) {
-        if (n < 1) {
-            throw new IllegalArgumentException("Invalid capacity");
-        }
         this.n = n;
         this.capacity = (1 << n) - 1;
         this.array = (E[]) new Object[capacity];
@@ -73,7 +72,7 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public double loadFactor() {
-        return size / (double) capacity;
+        return (size + tombstones()) / (double) capacity;
     }
 
     /**
@@ -83,7 +82,9 @@ public class OpenHashTable<E> implements HashTable<E> {
     public int tombstones() {
         int count = 0;
         for (boolean t : tombstone) {
-            if (t) count++;
+            if (t) {
+                count++;
+            }
         }
         return count;
     }
@@ -99,18 +100,13 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public boolean add(E e) {
-        // Note: in addition to the considerations from ChainingHashTable,
-        // remember that insertions can happen either into empty (null)
-        // calles, or into non-null cells that are marked as tombstones
-        // which can be overwritten (and the correspnding tombstone
-        // value cleared)
+        if (loadFactorWithTombstones() > 0.75) {
+            resize();
+        }
         int index = index(e);
         while (array[index] != null) {
-            if (array[index].equals(e)) {
-                array[index] = e;
-                tombstone[index] = false;
-                size++;
-                return true;
+            if (!tombstone[index] && array[index].equals(e)) {
+                return false;
             }
             index = (index + 1) % capacity;
         }
@@ -121,11 +117,9 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public boolean remove(E e) {
-        // To remove a given value, don't actually remove it from the array;
-        // just set the corresponding cell in the tombstone array
         int index = index(e);
         while (array[index] != null) {
-            if (array[index].equals(e)) {
+            if (!tombstone[index] && array[index].equals(e)) {
                 tombstone[index] = true;
                 size--;
                 return true;
@@ -137,12 +131,9 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public E get(E e) {
-        // To do lookups, you have to check the cell and all the following
-        // cells (including tombstoned cells) until you hit a non-tombstoned
-        // empty cell
         int index = index(e);
         while (array[index] != null) {
-            if (array[index].equals(e) && !tombstone[index]) {
+            if (!tombstone[index] && array[index].equals(e)) {
                 return array[index];
             }
             index = (index + 1) % capacity;
@@ -152,39 +143,11 @@ public class OpenHashTable<E> implements HashTable<E> {
 
     @Override
     public boolean contains(E e) {
-        // The same considerations as in get() apply here.
-        int index = index(e);
-        while (array[index] != null) {
-            if (array[index].equals(e) && !tombstone[index]) {
-                return true;
-            }
-            index = (index + 1) % capacity;
-        }
-        return false;
+        return get(e) != null;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return new Iterator<E>() {
-            int index = 0;
-            int count = 0;
-
-            @Override
-            public boolean hasNext() {
-                return count < size;
-            }
-
-            @Override
-            public E next() {
-                while (index < capacity) {
-                    if (array[index] != null && !tombstone[index]) {
-                        count++;
-                        return array[index++];
-                    }
-                    index++;
-                }
-                throw new NoSuchElementException();
-            }
-        };
+        return null;
     }
 }

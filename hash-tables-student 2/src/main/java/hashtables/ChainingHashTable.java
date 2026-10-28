@@ -32,7 +32,12 @@ public class ChainingHashTable<E> implements HashTable<E> {
      * Instantiate a new hash table. The initial capacity should be 7.
      */
     public ChainingHashTable() {
-        this(7);
+        this.n = 3;
+        this.capacity = 7;
+        this.array = new LinkedList[capacity];
+        for (int i = 0; i < capacity; i++) {
+            array[i] = new LinkedList<>();
+        }
     }
 
     /**
@@ -41,9 +46,6 @@ public class ChainingHashTable<E> implements HashTable<E> {
      * than a power of two.
      */
     public ChainingHashTable(int n) {
-        if (n < 1) {
-            throw new IllegalArgumentException("Invalid capacity");
-        }
         this.n = n;
         this.capacity = (1 << n) - 1;
         this.array = new LinkedList[capacity];
