@@ -37,9 +37,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
         if (current == null) {
             return new Node<>(e);
         }
-        if (e.equals(current.value)) {
-            current.value = e; // replace the old element
-        } else if (e.compareTo(current.value) < 0) {
+        if (e.equals(current.data)) {
+            current.data = e; // replace the old element
+        } else if (e.compareTo(current.data) < 0) {
             current.left = addRecursive(current.left, e);
         } else {
             current.right = addRecursive(current.right, e);
@@ -62,10 +62,10 @@ public class BinarySearchTree<E extends Comparable<E>> {
         if (current == null) {
             return false;
         }
-        if (e.equals(current.value)) {
+        if (e.equals(current.data)) {
             return true;
         }
-        if (e.compareTo(current.value) < 0) {
+        if (e.compareTo(current.data) < 0) {
             return containsRecursive(current.left, e);
         }
         return containsRecursive(current.right, e);
@@ -87,7 +87,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
         if (current == null) {
             return null;
         }
-        if (e.equals(current.value)) {
+        if (e.equals(current.data)) {
             // Cases 1 and 2: zero or one child
             if (current.left == null) {
                 return current.right;
@@ -97,9 +97,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
             }
             // Case 3: two children; replace with smallest in right subtree
             Node<E> smallest = findSmallest(current.right);
-            current.value = smallest.value;
-            current.right = removeRecursive(current.right, smallest.value);
-        } else if (e.compareTo(current.value) < 0) {
+            current.data = smallest.data;
+            current.right = removeRecursive(current.right, smallest.data);
+        } else if (e.compareTo(current.data) < 0) {
             current.left = removeRecursive(current.left, e);
         } else {
             current.right = removeRecursive(current.right, e);
@@ -128,7 +128,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
         while (current.left != null) {
             current = current.left;
         }
-        return current.value;
+        return current.data;
     }
  
 }
