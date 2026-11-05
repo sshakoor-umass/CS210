@@ -1,0 +1,6 @@
+{
+  "files.readonlyInclude": {
+    "src/main/java/trees/TreePrinter.java": true,
+    "src/main/java/trees/Node.java": true
+  }
+}
