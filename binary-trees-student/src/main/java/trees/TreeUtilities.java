@@ -2,10 +2,10 @@
  * Copyright 2026 Marc Liberatore.
  */
 package trees;
-
+ 
 import java.util.ArrayList;
 import java.util.List;
-
+ 
 /**
  * A collection of utility methods for trees and their nodes.
  * 
@@ -24,7 +24,7 @@ public class TreeUtilities {
         inOrderHelper(node, result);
         return result;
     }
-
+ 
     private static <E> void inOrderHelper(Node<E> node, List<E> result) {
         if (node != null) {
             inOrderHelper(node.left, result);
@@ -32,7 +32,7 @@ public class TreeUtilities {
             inOrderHelper(node.right, result);
         }
     }
-
+ 
     /**
      * Returns the height of the node n.
      * 
@@ -50,7 +50,7 @@ public class TreeUtilities {
         int rightHeight = height(n.right);
         return 1 + Math.max(leftHeight, rightHeight);
     }
-
+ 
     /**
      * Return a new, balanced tree containing all the values of the old tree bst.
      * @param bst
@@ -60,19 +60,25 @@ public class TreeUtilities {
         List<E> elements = TreeUtilities.inOrder(bst.root);
         return buildBalancedTree(elements);
     }
-
+ 
     private static <E extends Comparable<E>> BinarySearchTree<E> buildBalancedTree(List<E> elements) {
+        BinarySearchTree<E> tree = new BinarySearchTree<>();
+        tree.root = buildNode(elements);
+        tree.size = elements.size();
+        return tree;
+    }
+ 
+    private static <E extends Comparable<E>> Node<E> buildNode(List<E> elements) {
         if (elements.isEmpty()) {
             return null;
         }
         int mid = elements.size() / 2;
-        BinarySearchTree<E> tree = new BinarySearchTree<>();
-        tree.add(elements.get(mid));
-        tree.left = buildBalancedTree(elements.subList(0, mid));
-        tree.right = buildBalancedTree(elements.subList(mid + 1, elements.size()));
-        return tree;
+        Node<E> node = new Node<>(elements.get(mid));
+        node.left = buildNode(elements.subList(0, mid));
+        node.right = buildNode(elements.subList(mid + 1, elements.size()));
+        return node;
     }
-
+ 
     /**
      * Returns true iff the tree rooted at n is a Binary Search Tree.
      * 
@@ -87,7 +93,7 @@ public class TreeUtilities {
     static <E extends Comparable<E>> boolean isBST(Node<E> n) {
         return isBSTHelper(n, null, null);
     }
-
+ 
     private static <E extends Comparable<E>> boolean isBSTHelper(Node<E> n, E min, E max) {
         if (n == null) {
             return true;
@@ -97,7 +103,7 @@ public class TreeUtilities {
         }
         return isBSTHelper(n.left, min, n.data) && isBSTHelper(n.right, n.data, max);
     }
-
+ 
     /**
      * Returns true iff the subtrees rooted at n and m have the same values 
      * and same structure. 
