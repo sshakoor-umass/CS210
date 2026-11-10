@@ -32,11 +32,7 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
      * @return the height of the subtree rooted at n
      */
     private int height(Node<E> n) {
-        if (n == null) {
-            return -1;
-        } else {
-            return 1 + Math.max(height(n.left), height(n.right));
-        }
+        return n == null ? -1 : 1 + Math.max(height(n.left), height(n.right));
     }
 
     /**
@@ -169,12 +165,12 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
                     rotateLeft(n);
                 } else if (rot.equals("LR")) {
                     // TODO: call the correct method(s) to fix an LR imbalance!
-                    rotateRight(n.left);
-                    rotateLeft(n);
+                    rotateLeft(n.left);
+                    rotateRight(n);
                 } else if (rot.equals("RL")) {
                     // TODO: call the correct method(s) to fix an RL imbalance!
-                    rotateLeft(n.right);
-                    rotateRight(n);
+                    rotateRight(n.right);
+                    rotateLeft(n);
                 } else {
                     // should never get here!
                     throw new IllegalStateException();
@@ -315,6 +311,7 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
                         // LR case
                         // TODO: call the correct method(s) to fix an LR imbalance!
                         rotateLeft(n.left);
+                        rotateRight(n);
                     }
                 } else {
                     // Right subtree is taller - RR or RL case
@@ -381,6 +378,33 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
     }
 
 
+    private void rotateLeft(Node<E> n) {
+        Node<E> B = n;
+        Node<E> p = B.parent;
+        Node<E> A = B.right;
+        Node<E> T2 = A.left;
+
+        if (B == root) {
+            root = A;
+            A.parent = null;
+        } else {
+            if (p.left == B) {
+                p.left = A;
+            } else {
+                p.right = A;
+            }
+            A.parent = p;
+        }
+
+        A.left = B;
+        B.parent = A;
+        B.right = T2;
+        if (T2 != null) {
+            T2.parent = B;
+        }
+    }
+
+
     /**
      * Return the greatest element in the tree that less than or equal to e,
      * or null if there is no such element.
@@ -389,12 +413,48 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
      * @return the greatest element in the tree that less than or equal to e
      */
     public E floor(E e) {
-        Node<E> node = find(e);
-        return node == null ? null : node.data;
+        Node<E> node = root;
+        E best = null;
+        while (node != null) {
+            int comparison = e.compareTo(node.data);
+            if (comparison == 0) {
+                return node.data;
+            } else if (comparison < 0) {
+                node = node.left;
+            } else {
+                best = node.data;
+                node = node.right;
+            }
+        }
+        return best;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new Iterator<E>() {
+            private final Deque<Node<E>> stack = new ArrayDeque<>();
+            {
+                pushLeft(root);
+            }
+            private void pushLeft(Node<E> node) {
+                while (node != null) {
+                    stack.push(node);
+                    node = node.left;
+                }
+            }
+            @Override
+            public boolean hasNext() {
+                return !stack.isEmpty();
+            }
+            @Override
+            public E next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                Node<E> node = stack.pop();
+                pushLeft(node.right);
+                return node.data;
+            }
+        };
     }
 }

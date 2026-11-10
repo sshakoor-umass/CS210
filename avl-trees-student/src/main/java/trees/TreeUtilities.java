@@ -20,7 +20,18 @@ public class TreeUtilities {
      * @return a list of elements from the tree from an in-order traversal starting at node
      */
     static <E> List<E> inOrder(Node<E> node) {
-        return new ArrayList<>();
+        List<E> result = new ArrayList<>();
+        inOrderWalk(node, result);
+        return result;
+    }
+
+    private static <E> void inOrderWalk(Node<E> node, List<E> result) {
+        if (node == null) {
+            return;
+        }
+        inOrderWalk(node.left, result);
+        result.add(node.data);
+        inOrderWalk(node.right, result);
     }
 
     /**
@@ -35,9 +46,8 @@ public class TreeUtilities {
     static <E> int height(Node<E> n) {
         if (n == null) {
             return -1;
-        } else {
-            return 1 + Math.max(height(n.left), height(n.right));
         }
+        return 1 + Math.max(height(n.left), height(n.right));
     }
 
     /**
@@ -52,16 +62,23 @@ public class TreeUtilities {
      * @return 
      */
     static <E extends Comparable<E>> boolean isBST(Node<E> n) {
+        return isBSTWithin(n, null, null);
+    }
+
+    private static <E extends Comparable<E>> boolean isBSTWithin(Node<E> n, E lower, E upper) {
         if (n == null) {
             return true;
         }
-        if (n.left != null && n.left.data.compareTo(n.data) >= 0) {
+        if (n.data == null) {
             return false;
         }
-        if (n.right != null && n.right.data.compareTo(n.data) <= 0) {
+        if (lower != null && n.data.compareTo(lower) <= 0) {
             return false;
         }
-        return isBST(n.left) && isBST(n.right);
+        if (upper != null && n.data.compareTo(upper) >= 0) {
+            return false;
+        }
+        return isBSTWithin(n.left, lower, n.data) && isBSTWithin(n.right, n.data, upper);
     }
 
     /**
@@ -82,11 +99,21 @@ public class TreeUtilities {
      * @returntrue iff the tree rooted at n is an AVL tree
      */
     static <E extends Comparable<E>> boolean isAVLTree(Node<E> n) {
+        return (n == null || n.parent == null)
+                && isBST(n) && isAVLWithParents(n, null);
+    }
+
+    private static <E> boolean isAVLWithParents(Node<E> n, Node<E> parent) {
         if (n == null) {
             return true;
         }
-        int balance = TreeUtilities.height(n.left) - TreeUtilities.height(n.right);
-        return Math.abs(balance) <= 1 && isAVLTree(n.left) && isAVLTree(n.right);
+        if (n.parent != parent) {
+            return false;
+        }
+        if (Math.abs(height(n.left) - height(n.right)) > 1) {
+            return false;
+        }
+        return isAVLWithParents(n.left, n) && isAVLWithParents(n.right, n);
     }
     
     /**
