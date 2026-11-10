@@ -395,6 +395,6 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return null;''
+        return null;
     }
 }
