@@ -3,7 +3,10 @@
  */
 package trees;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A (partial) implementation of AVL tree. You'll need to complete the rotations to make
@@ -161,7 +164,7 @@ public class AVLTree<E extends Comparable<E>> implements Iterable<E> {
                 if (rot.equals("LL")) {
                     rotateRight(n);
                 } else if (rot.equals("RR")) {
-                    // TODO: call the correct method(s) to fix an RR imbalance!
+                    // TODO: call the `correct method(s) to fix an RR imbalance!
                     rotateLeft(n);
                 } else if (rot.equals("LR")) {
                     // TODO: call the correct method(s) to fix an LR imbalance!

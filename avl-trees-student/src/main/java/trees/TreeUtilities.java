@@ -69,9 +69,6 @@ public class TreeUtilities {
         if (n == null) {
             return true;
         }
-        if (n.data == null) {
-            return false;
-        }
         if (lower != null && n.data.compareTo(lower) <= 0) {
             return false;
         }
@@ -128,10 +125,10 @@ public class TreeUtilities {
     static <E> boolean equalSubtrees(Node<E> n, Node<E> m) {
         if (n == null && m == null) {
             return true;
-        } else if (n == null || m == null) {
-            return false;
-        } else {
-            return n.data.equals(m.data) && equalSubtrees(n.left, m.left) && equalSubtrees(n.right, m.right);
         }
+        if (n == null || m == null) {
+            return false;
+        }
+        return n.data.equals(m.data) && equalSubtrees(n.left, m.left) && equalSubtrees(n.right, m.right);
     }
 }
